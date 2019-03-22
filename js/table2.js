@@ -26,7 +26,7 @@ class Column extends React.Component {
 		var cont = [];			
         for (var j in this.props) {
         	if(null != this.props[j])
-        	cont.push(e('td', {style:{'text-align': 'center'}}, this.props[j]));
+        	cont.push(e('td', {style:{'text-align': 'center', 'height': '100px'}}, this.props[j]));
     	}
 		return e('tr', null, cont);
 	}
@@ -40,6 +40,8 @@ class Table extends React.Component {
 		}
 
 		this.handleGetData = this.handleGetData.bind(this);
+		this.handleCache = this.handleCache.bind(this);
+		this.handleGetCache = this.handleGetCache.bind(this);
 		this.handleGetData();
 	}
 
@@ -54,6 +56,23 @@ class Table extends React.Component {
                 	wait: false,
                 })
             });
+
+	}
+
+	handleCache() {
+		if('caches' in window) {
+			caches.open('test-cache').then(function(cache) {
+		  		cache.add('js/data2.json');
+			});
+		}	
+	}
+
+	handleGetCache() {
+		caches.open('test-cache').then(function(cache) { 
+			cache.keys().then(function(cachedRequests) { 
+		    	console.log(cachedRequests);
+			});
+		});
 	}
 
 	render() {
