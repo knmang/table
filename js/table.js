@@ -1,19 +1,31 @@
 
 const e = React.createElement;
 
-class List extends React.Component {
+class Row extends React.Component {
 	constructor(props) {
 		super(props);
 	}
 
 	render() {
-		console.log(this.props);
-		// for(0 = i, ,)
-		// this.props.map(function(cont, i) {
-		// 	cont.key = i;
-		// 	console.log(cont);
-		// })
-		return e('tr', this.props.cont, null);
+		var cont = [];
+        for (var a in this.props) {
+            cont.push(e('td', null, this.props[a]));
+        }
+		return e('tr', null, cont);
+	}
+}
+
+class Column extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		var cont = [];
+        for (var a in this.props) {
+            cont.push(e('th', null, this.props[a]));
+        }
+		return e('tr', null, cont);
 	}
 }
 
@@ -42,13 +54,13 @@ class Table extends React.Component {
 	}
 
 	render() {
+		var b = null;
 		return this.state.wait ? e('div', null, null) :
 			e('table', {border: '1', style:{'border-collapse': 'collapse'}},
 				this.table.list.map(function(list, i) {
-					list.key = i;
-					list[i] = list;
-					return e(List, list[i], null)}));
-
+					var Tag = 0 == i ? Row : Column ;
+					return e(Tag, list, null)
+				}));
 	}
 }
 
