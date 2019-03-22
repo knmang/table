@@ -8,10 +8,11 @@ class Row extends React.Component {
 
 	render() {
 		var cont = [];
-        for (var a in this.props) {
-        	if(null != this.props[a])
-            cont.push(e('th', {style:{'text-align': 'center'}}, this.props[a]));
-        }
+		for(var j in this.props.title) {
+	        for (var k in this.props.title[j]) {
+            	cont.push(e('th', {style:{'text-align': 'center'}}, this.props.title[j][k]));
+        	}
+		}
 		return e('tr', null, cont);
 	}
 }
@@ -22,11 +23,11 @@ class Column extends React.Component {
 	}
 
 	render() {
-		var cont = [];
-        for (var a in this.props) {
-        	if(null != this.props[a])
-            cont.push(e('td', null, this.props[a]));
-        }
+		var cont = [];			
+        for (var j in this.props) {
+        	if(null != this.props[j])
+        	cont.push(e('td', {style:{'text-align': 'center'}}, this.props[j]));
+    	}
 		return e('tr', null, cont);
 	}
 }
@@ -46,7 +47,7 @@ class Table extends React.Component {
 		var thiz = this;
 
         load("http://chnlab.com/xs/js/authorize.js");
-        httpGetAsync("js/data.json",
+        httpGetAsync("js/data2.json",
             function(json_str) {
                 thiz.table = JSON.parse(json_str);        
                 thiz.setState({
@@ -58,9 +59,9 @@ class Table extends React.Component {
 	render() {
 		return this.state.wait ? e('div', null, null) :
 			e('table', {border: '1', style:{'border-collapse': 'collapse'}},
-				this.table.list.map(function(list, i) {
-					var Tag = 0 == i ? Row : Column ;
-					return e(Tag, list, null)
+				e(Row, {title: this.table.title}, null),
+				this.table.data.map(function(cont, i) {
+					return e(Column, cont, null)
 				}));
 	}
 }
