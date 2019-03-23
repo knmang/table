@@ -40,10 +40,17 @@ class Table extends React.Component {
 		}
 
 		this.handleGetData = this.handleGetData.bind(this);
-		this.handleCache = this.handleCache.bind(this);
 		this.handleGetCache = this.handleGetCache.bind(this);
 		this.handleGetData();
 	}
+
+	componentDidMount() {
+		window.addEventListener('scroll', this.handleGetCache);
+	}
+
+  	componentWillUnmount() {
+		window.removeEventListener('scroll', this.handleGetCache);
+  	}
 
 	handleGetData() {
 		var thiz = this;
@@ -57,14 +64,12 @@ class Table extends React.Component {
                 })
             });
 
-	}
-
-	handleCache() {
 		if('caches' in window) {
 			caches.open('test-cache').then(function(cache) {
 		  		cache.add('js/data2.json');
 			});
-		}	
+		}
+
 	}
 
 	handleGetCache() {
@@ -77,7 +82,7 @@ class Table extends React.Component {
 
 	render() {
 		return this.state.wait ? e('div', null, null) :
-			e('table', {border: '1', style:{'border-collapse': 'collapse'}},
+			e('table', {border: '1', style:{'border-collapse': 'collapse'}, onscroll: this.handleGetCache},
 				e(Row, {title: this.table.title}, null),
 				this.table.data.map(function(cont, i) {
 					return e(Column, cont, null)
