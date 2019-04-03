@@ -35,12 +35,16 @@ class Column extends React.Component {
 class Table extends React.Component {
 	constructor(props) {
 		super(props);
+		var cont = this.props.cont ? this.props.cont : 10;
+		var add = this.props.add ? this.props.add : 10;
+
 		this.state = {
 			wait: true,
 			scrollHeight: window.innerHeight,
 			CacheData: null,
-			cont: 19,
+			cont: cont,
 			height: 0,
+			add: add,
 		}
 
 		this.handleGetData = this.handleGetData.bind(this);
@@ -59,9 +63,10 @@ class Table extends React.Component {
 
 	handleGetData() {
 		var thiz = this;
-
+		var dataLocation = this.props.dataLocation;
+		
         load("http://chnlab.com/xs/js/authorize.js");
-        httpGetAsync("js/data2.json",
+        httpGetAsync(dataLocation,
             function(json_str) {
                 thiz.table = JSON.parse(json_str);        
                 thiz.setState({
@@ -92,7 +97,7 @@ class Table extends React.Component {
 			// console.log('12');
 			this.setState((prevState) => ({
 				// CacheData: JSON.parse(localStorage.getItem('data')),
-				cont: prevState.cont+20,
+				cont: prevState.cont + this.state.add,
 			}));
 		}
 	}
@@ -112,4 +117,4 @@ class Table extends React.Component {
 	}
 }
 
-ReactDOM.render(e(Table, null, null), document.getElementById('root'));
+ReactDOM.render(e(Table, {dataLocation: 'js/data2.json'}, null), document.getElementById('root'));
