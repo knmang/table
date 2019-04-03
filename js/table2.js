@@ -20,24 +20,12 @@ class Row extends React.Component {
 class Column extends React.Component {
 	constructor(props) {
 		super(props);
-		this.getColumnHeight = this.getColumnHeight.bind(this);
-	}
-
-	componentDidMount() {
-		this.getColumnHeight();
-	}
-
-	getColumnHeight() {
-		var cid = this.props.cid;
-		var {clientHeight} = this.refs[cid];
-		// console.log(clientHeight);
-		this.props.setcHeight(clientHeight);
 	}
 
 	render() {
 		var cont = [];
         for (var j in this.props) {
-        	if(null != this.props[j] && 'cid' != j && 'setcHeight' != j)
+        	if(null != this.props[j] && 'cid' != j)
         	cont.push(e('td', {style:{'text-align': 'center', 'height': '100px'}}, this.props[j]));
     	}
 		return e('tr', {ref: this.props.cid}, cont);
@@ -55,7 +43,6 @@ class Table extends React.Component {
 			height: 0,
 		}
 
-    	this.handlesetHeight = this.handlesetHeight.bind(this);
 		this.handleGetData = this.handleGetData.bind(this);
 		this.handleGetCache = this.handleGetCache.bind(this);
 		this.handleGetData();
@@ -63,9 +50,6 @@ class Table extends React.Component {
 
 	componentDidMount() {
 		window.addEventListener('scroll', this.handleGetCache);
-		// this.setState({
-  //       	scrollHeight: window.innerHeight,
-  //       })
 	}
 
   	componentWillUnmount() {
@@ -102,9 +86,10 @@ class Table extends React.Component {
 		// });
 
 		var {clientHeight} = this.refs.tableHeight;
-		console.log(clientHeight);
+		var isBottom = window.innerHeight + window.scrollY;
 
-		if(this.state.height >= clientHeight-1) {
+		if(isBottom >= clientHeight) {
+			// console.log('12');
 			this.setState((prevState) => ({
 				// CacheData: JSON.parse(localStorage.getItem('data')),
 				cont: prevState.cont+20,
@@ -112,27 +97,15 @@ class Table extends React.Component {
 		}
 	}
 
-	handlesetHeight(cHeight) {
-		// console.log(cHeight);
-		var allHeight = this.state.height + cHeight*20;
-		this.setState({
-			height: allHeight,
-		});
-    	console.log(this.state.height);
-	}
-
 	render() {
-		// console.log(this.state.CacheData);
-		// console.log(window.scrollY);
 		var num = this.state.cont;
 		var thiz = this;
 
 		return this.state.wait ? e('div', null, null) :
-			e('table', {ref: 'tableHeight', border: '1', style:{'border-collapse': 'collapse','overflow': 'hidden'}},
+			e('table', {ref: 'tableHeight', border: '1', style:{'border-collapse': 'collapse'}},
 				e(Row, {title: this.table.title}, null),
 				this.table.data.map(function(cont, i) {
 					cont.cid = i;
-					cont.setcHeight = thiz.handlesetHeight;
 					if(num >= i)
 					return e(Column, cont, null)
 				}));
