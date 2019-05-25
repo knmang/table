@@ -45,13 +45,17 @@ class Table extends React.Component {
 	handleGetData() {
 		var thiz = this;
 
+        var skip = 1000;
+        var count = 10;
+
         load("http://chnlab.com/xs/js/authorize.js");
-        httpGetAsync("js/data.json",
+        httpGetAsync("https://home.chnlab.com/table/?skip=" + skip + "&count=" + count,
             function(json_str) {
                 thiz.table = JSON.parse(json_str);        
-                thiz.setState({
-                	wait: false,
-                })
+                //thiz.setState({
+                //	wait: false,
+                //})
+                console.log(thiz.table);
             });
 	}
 
