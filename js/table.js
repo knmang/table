@@ -75,13 +75,11 @@ class Table extends React.Component {
                 thiz.table = JSON.parse(json_str);        
                 thiz.setState({
                 	wait: false,
-                })           
-           		// sessionStorage.setItem('data' ,JSON.stringify(thiz.table.data));
+                })
             });
 	}
 
 	render() {
-		// var site = JSON.parse(sessionStorage.getItem("data"));
 		return this.state.wait ? e('div', null, null) :
 			e('table', {ref: 'tableHeight', border: '1', style:{'border-collapse': 'collapse'}},
 				e(Row, {title: this.table.title}, null),
