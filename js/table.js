@@ -8,11 +8,10 @@ class Row extends React.Component {
 
 	render() {
 		var cont = [];
-		for(var j in this.props.title) {
-	        for (var k in this.props.title[j]) {
-            	cont.push(e('th', {style:{'text-align': 'center'}}, this.props.title[j][k]));
-        	}
-		}
+        for (var a in this.props.title) {
+        	if(null != this.props.title[a])
+            cont.push(e('th', {style:{'text-align': 'center'}}, this.props.title[a]));
+        }
 		return e('tr', null, cont);
 	}
 }
@@ -24,88 +23,74 @@ class Column extends React.Component {
 
 	render() {
 		var cont = [];
-        for (var j in this.props) {
-        	if(null != this.props[j] && 'cid' != j)
-        	cont.push(e('td', {style:{'text-align': 'center', 'height': '100px'}}, this.props[j]));
-    	}
-		return e('tr', {ref: this.props.cid}, cont);
+        for (var a in this.props) {
+        	if(null != this.props[a])
+            cont.push(e('td', null, this.props[a]));
+        }
+		return e('tr', null, cont);
 	}
 }
 
 class Table extends React.Component {
 	constructor(props) {
 		super(props);
-		var cont = this.props.cont ? this.props.cont : 10;
-		var add = this.props.add ? this.props.add : 10;
-
 		this.state = {
 			wait: true,
-			scrollHeight: window.innerHeight,
-			CacheData: null,
-			cont: cont,
-			height: 0,
-			add: add,
+			count: 10,
 		}
 
 		this.handleGetData = this.handleGetData.bind(this);
-		this.handleGetCache = this.handleGetCache.bind(this);
+		this.handleIsBottom = this.handleIsBottom.bind(this);
 		this.handleGetData();
 	}
 
 	componentDidMount() {
-		window.addEventListener('scroll', this.handleGetCache);
+		window.addEventListener('scroll', this.handleIsBottom);
 	}
 
   	componentWillUnmount() {
-		window.removeEventListener('scroll', this.handleGetCache);
-		caches.delete('test-cache');
+		window.removeEventListener('scroll', this.handleIsBottom);
   	}
 
-	handleGetData() {
-		var thiz = this;
-		var dataLocation = this.props.dataLocation;
-		
-        load("http://chnlab.com/xs/js/authorize.js");
-        httpGetAsync(dataLocation,
-            function(json_str) {
-                thiz.table = JSON.parse(json_str);        
-                thiz.setState({
-                	wait: false,
-                })
-                for(var i in thiz.table.data){
-   			    	localStorage.setItem('id'+i,JSON.stringify(thiz.table.data[i]));
-                }
-                console.log(thiz.table);       
-            });     
-        // sessionStorage.clear();
-	}
-
-	handleGetCache() {
+  	handleIsBottom() {
 		var {clientHeight} = this.refs.tableHeight;
 		var isBottom = window.innerHeight + window.scrollY;
 
 		if(isBottom >= clientHeight) {
 			this.setState((prevState) => ({
-				cont: prevState.cont + this.state.add,
+				count: prevState.count + 10,
 			}));
-			// console.log(this.state.cont);
+			this.handleGetData();
 		}
 	}
 
+	handleGetData() {
+		var thiz = this;
+        var skip = 1000;
+        var count = this.state.count;
+
+        load("http://chnlab.com/xs/js/authorize.js");
+        httpGetAsync("https://home.chnlab.com/table/?skip=" + skip + "&count=" + count,
+            function(json_str) {
+                thiz.table = JSON.parse(json_str);        
+                thiz.setState({
+                	wait: false,
+                })           
+           		// sessionStorage.setItem('data' ,JSON.stringify(thiz.table.data));
+            });
+	}
+
 	render() {
-		var num = this.state.cont;
-		// var thiz = this;
-		// console.log(this.table);
+		// var site = JSON.parse(sessionStorage.getItem("data"));
 		return this.state.wait ? e('div', null, null) :
 			e('table', {ref: 'tableHeight', border: '1', style:{'border-collapse': 'collapse'}},
 				e(Row, {title: this.table.title}, null),
-				this.table.data.map(function(cont, i) {
-					// console.log(cont);
-					cont.cid = i;
-					if(num >= i)
-					return e(Column, cont, null)
+				this.table.data.map(function(list, i) {
+					// var Tag = 0 == i ? Row : Column ;
+					// return e(Tag, list, null)
+					return e(Column, list, null)
 				}));
 	}
 }
 
-ReactDOM.render(e(Table, {dataLocation: 'js/data2.json', add:20}, null), document.getElementById('root'));
+ReactDOM.render(e(Table, null, null), document.getElementById('root'));
