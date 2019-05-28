@@ -1,5 +1,6 @@
 {
 	"title":[{"title":"名字", "time":"时间", "code":"码"}],
+<<<<<<< HEAD
     "data": [{"title":"1", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"},
     {"title":"2", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"}, {"title":"桂平西山成人票（不含索道）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"},
     {"title":"3", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"}, {"title":"桂平西山成人票（不含索道）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"},
@@ -108,4 +109,14 @@
     {"title":"6", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"}, {"title":"桂平西山成人票（不含索道）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"},
     {"title":"7", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"}, {"title":"桂平西山成人票（不含索道）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"},
     {"title":"8", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"}, {"title":"桂平西山成人票（不含索道）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"}]
+=======
+    "data": [{"title":"桂平西山成人票（不含索道）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"},
+    {"title":"桂平", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"}, {"title":"桂平西山成人票（不含索道）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"},
+    {"title":"桂平西）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"}, {"title":"桂平西山成人票（不含索道）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"},
+    {"title":"桂平西山", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"}, {"title":"桂平西山成人票（不含索道）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"},
+    {"title":"桂平西山成）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"}, {"title":"桂平西山成人票（不含索道）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"},
+    {"title":"桂平西山成人）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"}, {"title":"桂平西山成人票（不含索道）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"},
+    {"title":"桂平西山成人票", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"}, {"title":"桂平西山成人票（不含索道）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"},
+    {"title":"桂平西山成人票（不含）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"}, {"title":"桂平西山成人票（不含索道）", "time":"2019-01-02 08:32", "code":"images/mine/timg.jpg"}]
+>>>>>>> 48c33c843c01ad59c35a5ae0cb2fae23c5230726
 }
