@@ -36,7 +36,7 @@ class Table extends React.Component {
 		super(props);
 		this.state = {
 			wait: true,
-			count: 10,
+			count: 20,
 		}
 
 		this.handleGetData = this.handleGetData.bind(this);
