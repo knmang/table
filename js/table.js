@@ -36,7 +36,8 @@ class Table extends React.Component {
 		super(props);
 		this.state = {
 			wait: true,
-			count: 20,
+			count: 50,
+			expired: 0,
 		}
 
 		this.handleGetData = this.handleGetData.bind(this);
@@ -58,7 +59,8 @@ class Table extends React.Component {
 
 		if(isBottom >= clientHeight) {
 			this.setState((prevState) => ({
-				count: prevState.count + 10,
+				count: prevState.count + 20,
+				expired: prevState.expired +20,
 			}));
 			this.handleGetData();
 		}
@@ -80,12 +82,15 @@ class Table extends React.Component {
 	}
 
 	render() {
+		var expired = this.state.expired;
+
 		return this.state.wait ? e('div', null, null) :
 			e('table', {ref: 'tableHeight', border: '1', style:{'border-collapse': 'collapse'}},
 				e(Row, {title: this.table.title}, null),
 				this.table.data.map(function(list, i) {
 					// var Tag = 0 == i ? Row : Column ;
 					// return e(Tag, list, null)
+					if(expired < i)
 					return e(Column, list, null)
 				}));
 	}
