@@ -31,13 +31,26 @@ class Column extends React.Component {
 	}
 }
 
+class Button extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		return e('div', {style:{height: '50px', width: '100vw', 'background-color': 'white', 'position': 'fixed' ,'top': 0}},
+			e('div', {className:'weui-btn weui-btn_mini weui-btn_primary', style:{'margin-left' :'20px'}}, '123'),
+			e('div', {className:'weui-btn weui-btn_mini weui-btn_primary', style:{'margin-left' :'20px'}}, '456'));
+	}
+}
+
 class Table extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			wait: true,
-			count: 50,
-			expired: 0,
+			count: 500,
+			min: 0,
+			max: 50,
 		}
 
 		this.handleGetData = this.handleGetData.bind(this);
@@ -60,9 +73,25 @@ class Table extends React.Component {
 		if(isBottom >= clientHeight) {
 			this.setState((prevState) => ({
 				count: prevState.count + 20,
-				expired: prevState.expired +20,
+				max: prevState.max + 15,
+				min: prevState.min + 15,
 			}));
 			this.handleGetData();
+		}
+
+		if(0 == window.scrollY) {
+			this.setState((prevState) => ({
+				min: prevState.min - 15,
+				max: prevState.max - 15,
+			}));
+			if(0 > this.state.min)
+				this.setState({
+					min: 0,
+				})
+			if(50 > this.state.max)
+				this.setState({
+					max: 50,
+				})
 		}
 	}
 
@@ -82,17 +111,18 @@ class Table extends React.Component {
 	}
 
 	render() {
-		var expired = this.state.expired;
+		var max = this.state.max;
+		var min = this.state.min;
 
 		return this.state.wait ? e('div', null, null) :
-			e('table', {ref: 'tableHeight', border: '1', style:{'border-collapse': 'collapse'}},
+		e('div', null,
+			e(Button, null, null),
+			e('table', {ref: 'tableHeight', style:{'margin-top': '55px'}},
 				e(Row, {title: this.table.title}, null),
 				this.table.data.map(function(list, i) {
-					// var Tag = 0 == i ? Row : Column ;
-					// return e(Tag, list, null)
-					if(expired < i)
+					if(min < i && i < max)
 					return e(Column, list, null)
-				}));
+				})));
 	}
 }
 
