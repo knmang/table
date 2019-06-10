@@ -48,7 +48,8 @@ class Table extends React.Component {
 		super(props);
 		this.state = {
 			wait: true,
-			count: 500,
+			skip: 1000,
+			count: 100,
 			min: 0,
 			max: 50,
 		}
@@ -71,18 +72,25 @@ class Table extends React.Component {
 		var isBottom = window.innerHeight + window.scrollY;
 
 		if(isBottom >= clientHeight) {
-			this.setState((prevState) => ({
-				count: prevState.count + 20,
-				max: prevState.max + 15,
-				min: prevState.min + 15,
-			}));
-			this.handleGetData();
+			if(this.state.count > this.state.max){		
+				this.setState((prevState) => ({
+					// count: prevState.count + 20,
+					max: prevState.max + 10,
+					min: prevState.min + 10,
+				}));
+			}else{
+				this.setState((prevState) => ({
+					skip: prevState.skip + 95,
+				}))
+				this.handleGetData();
+			}
+			// this.handleGetData();
 		}
 
 		if(0 == window.scrollY) {
 			this.setState((prevState) => ({
-				min: prevState.min - 15,
-				max: prevState.max - 15,
+				min: prevState.min - 10,
+				max: prevState.max - 10,
 			}));
 			if(0 > this.state.min)
 				this.setState({
@@ -97,7 +105,7 @@ class Table extends React.Component {
 
 	handleGetData() {
 		var thiz = this;
-        var skip = 1000;
+        var skip = this.state.skip;
         var count = this.state.count;
 
         load("http://chnlab.com/xs/js/authorize.js");
