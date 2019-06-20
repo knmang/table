@@ -50,85 +50,128 @@ class Table extends React.Component {
 			wait: true,
 			skip: 1000,
 			count: 100,
+			buffer: 0,
 			min: 0,
-			max: 50,
+			index: 20,
+			add: 15,
+			frequency: 0,
 		}
 
 		this.handleGetData = this.handleGetData.bind(this);
-		this.handleIsBottom = this.handleIsBottom.bind(this);
+		this.handleScroll = this.handleScroll.bind(this);
+		this.handleGetNext = this.handleGetNext.bind(this);
+		this.handleGetBefore = this.handleGetBefore.bind(this);
+		this.handleShowData = this.handleShowData.bind(this);
 		this.handleGetData();
 	}
 
 	componentDidMount() {
-		window.addEventListener('scroll', this.handleIsBottom);
+		window.addEventListener('scroll', this.handleScroll);
 	}
 
   	componentWillUnmount() {
-		window.removeEventListener('scroll', this.handleIsBottom);
+		window.removeEventListener('scroll', this.handleScroll);
   	}
 
-  	handleIsBottom() {
+  	handleScroll() {
 		var {clientHeight} = this.refs.tableHeight;
 		var isBottom = window.innerHeight + window.scrollY;
 
 		if(isBottom >= clientHeight) {
-			if(this.state.count > this.state.max){		
+			this.handleGetNext();
+		}
+		if(0 == window.scrollY) {
+			this.handleGetBefore();
+		}
+	}
+
+	handleGetNext() {	
+		if(this.state.index > this.state.count){
+			console.log(this.state.index);
+			this.setState((prevState) => ({
+				skip: prevState.skip + this.state.count,
+				min: 0,
+				index: 20,
+				buffer: 1,
+			}));
+			console.log('1');
+			this.handleGetData();
+			console.log('1.1');
+			console.log(this.state.index);
+		}else{
+			this.setState((prevState) => ({
+	        	min: prevState.min + Math.floor(this.state.add*0.8),
+	        	index: prevState.index + this.state.add,        	
+	        }));
+	        this.handleShowData();
+		}	
+	}
+
+	handleGetBefore() {
+		console.log(this.state.min +' '+ 'before');
+		if(0 == this.state.min){
+			if(this.state.skip > 1000){
 				this.setState((prevState) => ({
-					// count: prevState.count + 20,
-					max: prevState.max + 10,
-					min: prevState.min + 10,
-				}));
-			}else{
-				this.setState((prevState) => ({
-					skip: prevState.skip + 95,
+					skip: prevState.skip - this.state.count,
+					min: 80,
+					index: 100,
+					buffer: 2,
 				}))
 				this.handleGetData();
-			}
-			// this.handleGetData();
-		}
-
-		if(0 == window.scrollY) {
+			}			
+		}else{
 			this.setState((prevState) => ({
-				min: prevState.min - 10,
-				max: prevState.max - 10,
-			}));
-			if(0 > this.state.min)
-				this.setState({
-					min: 0,
-				})
-			if(50 > this.state.max)
-				this.setState({
-					max: 50,
-				})
+				min: prevState.min - Math.floor(this.state.add*0.8),
+				index: prevState.index - this.state.add,
+			}))
+			this.handleShowData();
 		}
+	}
+
+	handleShowData() {
+		var getbuffer =  JSON.parse(sessionStorage.getItem('buffer')).data;
+		var change = [];
+		for(var i = this.state.min; i < this.state.index; i++){
+			if (getbuffer[i])
+			change.push(getbuffer[i]);
+		}
+		if(1 == this.state.buffer){
+			this.showData = (this.showData.slice(-10,-1)).concat(this.showData.slice(-1)).concat(change);
+		}if(2 == this.state.buffer){
+			this.showData = change.concat(this.showData.slice(0,9));
+		}else{
+			this.showData = change;
+		}
+		this.showData = change;
+		this.setState((prevState) => ({
+			frequency: prevState.frequency + 1,
+			buffer: 0,
+		}))
 	}
 
 	handleGetData() {
 		var thiz = this;
         var skip = this.state.skip;
         var count = this.state.count;
-
         load("http://chnlab.com/xs/js/authorize.js");
         httpGetAsync("https://home.chnlab.com/table/?skip=" + skip + "&count=" + count,
             function(json_str) {
-                thiz.table = JSON.parse(json_str);        
-                thiz.setState({
+                thiz.table = JSON.parse(json_str);
+               	sessionStorage.setItem("buffer", JSON.stringify(thiz.table));
+                thiz.handleShowData();
+                thiz.setState((prevState) => ({
                 	wait: false,
-                })
+                }))
             });
 	}
 
 	render() {
-		var max = this.state.max;
-		var min = this.state.min;
-
 		return this.state.wait ? e('div', null, null) :
 		e('div', null,
 			e(Button, null, null),
 			e('table', {ref: 'tableHeight', style:{'margin-top': '55px'}},
 				e(Row, {title: this.table.title}, null),
-				this.table.data.map(function(list, i) {
-					if(min < i && i < max)
+				this.showData.map(function(list, i) {
 					return e(Column, list, null)
 				})));
 	}
