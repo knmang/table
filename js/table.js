@@ -19,15 +19,32 @@ class Row extends React.Component {
 class Column extends React.Component {
 	constructor(props) {
 		super(props);
+		this.handleGetIdTop = this.handleGetIdTop.bind(this);
+		this.handleGetIdTop();
+	}
+
+	handleGetIdTop() {
+		// console.log(this.props);
+		if(this.props.special == this.props[0]){
+			console.log(this.props);
+			console.log(this.props[0]);
+		}
+		// console.log(this.refs.id.offsetTop);
 	}
 
 	render() {
 		var cont = [];
+
         for (var a in this.props) {
         	if(null != this.props[a])
             cont.push(e('td', null, this.props[a]));
         }
-		return e('tr', null, cont);
+
+		// return e('div', null,
+		// 	e('div', {className:'weui-btn weui-btn_mini weui-btn_primary', style:{'margin-left' :'20px'}, onClick: this.handleGetIdTop}, '123'),
+		// 	e('tr', {ref: 'id'}, cont));
+
+		return e('tr', {ref: 'id'}, cont);
 	}
 }
 
@@ -36,8 +53,12 @@ class Button extends React.Component {
 		super(props);
 	}
 
+	handleUp() {
+		
+	}
+
 	render() {
-		return e('div', {style:{height: '50px', width: '100vw', 'background-color': 'white', 'position': 'fixed' ,'top': 0}},
+		return e('div', {style:{height: '50px', width: '98.5vw', 'background-color': 'white', 'position': 'fixed' ,'top': 0}},
 			e('div', {className:'weui-btn weui-btn_mini weui-btn_primary', style:{'margin-left' :'20px'}}, '123'),
 			e('div', {className:'weui-btn weui-btn_mini weui-btn_primary', style:{'margin-left' :'20px'}}, '456'));
 	}
@@ -54,7 +75,6 @@ class Table extends React.Component {
 			min: 0,
 			index: 20,
 			add: 15,
-			frequency: 0,
 		}
 
 		this.handleGetData = this.handleGetData.bind(this);
@@ -62,54 +82,56 @@ class Table extends React.Component {
 		this.handleGetNext = this.handleGetNext.bind(this);
 		this.handleGetBefore = this.handleGetBefore.bind(this);
 		this.handleShowData = this.handleShowData.bind(this);
+		this.handleBinding = this.handleBinding.bind(this);
 		this.handleGetData();
 	}
 
 	componentDidMount() {
-		window.addEventListener('scroll', this.handleScroll);
+		// window.addEventListener('scroll', this.handleScroll);
+		// this.refs.table.addEventListener('scroll', this.handleScroll)s;
 	}
 
   	componentWillUnmount() {
-		window.removeEventListener('scroll', this.handleScroll);
+		this.refs.table.removeEventListener('scroll', this.handleScroll);
   	}
 
-  	handleScroll() {
-		var {clientHeight} = this.refs.tableHeight;
-		var isBottom = window.innerHeight + window.scrollY;
+ 	handleBinding() {
+ 		this.refs.table.addEventListener('scroll', this.handleScroll);
+ 	}
 
-		if(isBottom >= clientHeight) {
+  	handleScroll() {
+		var {clientHeight} = this.refs.table;
+		var isBottom = this.refs.table.clientHeight + this.refs.table.scrollTop;
+
+		if(isBottom >= this.refs.table.scrollHeight){
 			this.handleGetNext();
 		}
-		if(0 == window.scrollY) {
-			this.handleGetBefore();
+
+		if(0 == this.refs.table.scrollTop) {
+			this.handleGetBefore();		
 		}
 	}
 
 	handleGetNext() {	
 		if(this.state.index > this.state.count){
-			console.log(this.state.index);
 			this.setState((prevState) => ({
 				skip: prevState.skip + this.state.count,
 				min: 0,
 				index: 20,
 				buffer: 1,
 			}));
-			console.log('1');
 			this.handleGetData();
-			console.log('1.1');
-			console.log(this.state.index);
 		}else{
 			this.setState((prevState) => ({
 	        	min: prevState.min + Math.floor(this.state.add*0.8),
-	        	index: prevState.index + this.state.add,        	
+	        	index: prevState.index + this.state.add,
 	        }));
 	        this.handleShowData();
 		}	
 	}
 
 	handleGetBefore() {
-		console.log(this.state.min +' '+ 'before');
-		if(0 == this.state.min){
+		if(0 >= this.state.min){
 			if(this.state.skip > 1000){
 				this.setState((prevState) => ({
 					skip: prevState.skip - this.state.count,
@@ -122,8 +144,12 @@ class Table extends React.Component {
 		}else{
 			this.setState((prevState) => ({
 				min: prevState.min - Math.floor(this.state.add*0.8),
-				index: prevState.index - this.state.add,
 			}))
+			if(20 < this.state.index){
+			this.setState((prevState) => ({
+					index: prevState.index - this.state.add,
+				}))
+			}
 			this.handleShowData();
 		}
 	}
@@ -141,10 +167,10 @@ class Table extends React.Component {
 			this.showData = change.concat(this.showData.slice(0,9));
 		}else{
 			this.showData = change;
+			// this.showData =  this.showData.concat(this.showData.slice(-1)[0][0]);
+			console.log(this.showData);
 		}
-		this.showData = change;
 		this.setState((prevState) => ({
-			frequency: prevState.frequency + 1,
 			buffer: 0,
 		}))
 	}
@@ -168,12 +194,15 @@ class Table extends React.Component {
 	render() {
 		return this.state.wait ? e('div', null, null) :
 		e('div', null,
-			e(Button, null, null),
-			e('table', {ref: 'tableHeight', style:{'margin-top': '55px'}},
-				e(Row, {title: this.table.title}, null),
-				this.showData.map(function(list, i) {
-					return e(Column, list, null)
-				})));
+			e(Button, this.showData, null),
+			e('div', {ref: 'table', style: {overflowY: 'scroll', 'padding-top': '53px', height:'93vh', white:'100vw'}},
+				e('table', {ref: 'tableHeight'},
+					e(Row, {title: this.table.title}, null),
+					e('div', {onClick: this.handleBinding, className:'weui-btn weui-btn_mini weui-btn_primary', style:{'margin-left' :'20px'}}, '123'),
+					this.showData.map(function(list, i) {
+						// if(i == 19)
+						return e(Column, list, null)
+					}))));
 	}
 }
 
