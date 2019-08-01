@@ -45,16 +45,23 @@ class Column extends React.Component {
 class Button extends React.Component {
 	constructor(props) {
 		super(props);
+
+		this.handleUp = this.handleUp.bind(this);
+		this.handleDown = this.handleDown.bind(this);
 	}
 
 	handleUp() {
-		
+		this.props.btnType(1);
+	}
+
+	handleDown() {
+		this.props.btnType(0);
 	}
 
 	render() {
 		return e('div', {style:{height: '50px', width: '98.5vw', 'background-color': 'white', 'position': 'fixed' ,'top': 0}},
-			e('div', {className:'weui-btn weui-btn_mini weui-btn_primary', style:{'margin-left' :'20px'}}, '123'),
-			e('div', {className:'weui-btn weui-btn_mini weui-btn_primary', style:{'margin-left' :'20px'}}, '456'));
+			e('div', {onClick: this.handleUp, className:'weui-btn weui-btn_mini weui-btn_primary', style:{'margin-left' :'20px'}}, '下滚'),
+			e('div', {onClick: this.handleDown, className:'weui-btn weui-btn_mini weui-btn_primary', style:{'margin-left' :'20px'}}, '上滚'));
 	}
 }
 
@@ -67,8 +74,8 @@ class Table extends React.Component {
 			count: 100,
 			type: 0,
 			min: 0,
-			index: 20,
-			add: 15,
+			index: 50,
+			add: 20,
 			id: null,
 		}
 
@@ -79,6 +86,7 @@ class Table extends React.Component {
 		this.handleShowData = this.handleShowData.bind(this);
 		this.handleBinding = this.handleBinding.bind(this);
 		this.handleSetTop = this.handleSetTop.bind(this);
+		this.handleButton = this.handleButton.bind(this);
 		this.handleGetData();
 	}
 
@@ -135,7 +143,6 @@ class Table extends React.Component {
 					index: 100,
 					type: 2,
 				}))
-				console.log('s>1000');
 				this.handleGetData();
 			}			
 		}else{
@@ -183,6 +190,10 @@ class Table extends React.Component {
 		})
 	}
 
+	handleButton(btnType) {
+		btnType ? this.refs.table.scrollTop = 0 : this.refs.table.scrollTop = this.refs.table.scrollHeight;
+	}
+
 	handleGetData() {
 		var thiz = this;
         var skip = this.state.skip;
@@ -205,7 +216,7 @@ class Table extends React.Component {
 
 		return this.state.wait ? e('div', null, null) :
 		e('div', {ref: this.handleBinding},
-			e(Button, this.showData, null),
+			e(Button, {btnType: this.handleButton}, null),
 			e('div', {ref: 'table', style: {overflowY: 'scroll', 'padding-top': '53px', height:'93vh', white:'100vw'}},
 				e('table', null,
 					e(Row, {title: this.table.title}, null),
