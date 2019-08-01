@@ -75,7 +75,7 @@ class Table extends React.Component {
 			type: 0,
 			min: 0,
 			index: 50,
-			add: 20,
+			add: 30,
 			id: null,
 		}
 
@@ -100,7 +100,7 @@ class Table extends React.Component {
 
   	handleScroll() {
 		var {clientHeight} = this.refs.table;
-		var isBottom = this.refs.table.clientHeight + this.refs.table.scrollTop;
+		var isBottom = this.refs.table.clientHeight + this.refs.table.scrollTop + 50;
 
 		if(isBottom >= this.refs.table.scrollHeight){
 			this.handleGetNext();
@@ -120,7 +120,7 @@ class Table extends React.Component {
 			this.setState((prevState) => ({
 				skip: prevState.skip + this.state.count,
 				min: 0,
-				index: 20,
+				index: 50,
 				type: 1,
 			}));
 			this.handleGetData();
@@ -139,7 +139,7 @@ class Table extends React.Component {
 			if(this.state.skip > 1000){
 				this.setState((prevState) => ({
 					skip: prevState.skip - this.state.count,
-					min: 80,
+					min: 50,
 					index: 100,
 					type: 2,
 				}))
