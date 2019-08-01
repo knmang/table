@@ -24,8 +24,6 @@ class Column extends React.Component {
 
 	handleGetIdTop() {
 		if(this.props.list[0] == this.props.id) {
-			console.log(this.props.id);
-			// console.log(this.props.id + ': '+ this.refs.id.offsetTop);
 			this.props.setTop(this.refs.id.offsetTop);
 		}
 	}
@@ -106,7 +104,6 @@ class Table extends React.Component {
 	}
 
 	handleSetTop (offsetTop){
-		// console.log(this.showData);
 		this.refs.table.scrollTop = offsetTop;
 	}
 
@@ -138,6 +135,7 @@ class Table extends React.Component {
 					index: 100,
 					type: 2,
 				}))
+				console.log('s>1000');
 				this.handleGetData();
 			}			
 		}else{
@@ -164,24 +162,15 @@ class Table extends React.Component {
 			change.push(getbuffer[i]);
 		}
 		if(1 == this.state.type){
-			
-			// id = this.showData[this.showData.length - 1][0];
-			// id = change[0][0];
-			// console.log(this.showData);
-			// console.log(this.showData[this.showData.length - 1][0]);
-			// console.log(change[0][0]);
+			id = this.showData[this.showData.length - 1][0];
 			this.showData = (this.showData.slice(-10,-1)).concat(this.showData.slice(-1)).concat(change);
-			// console.log(this.state.id);
-			// console.log(this.showData);
-		}if(2 == this.state.type){
-			console.log(2);
+		}else if(2 == this.state.type){
 			id = this.showData[0][0];
 			this.showData = change.concat(this.showData.slice(0,9));
-		}if(3 == this.state.type){
+		}else if(3 == this.state.type){
 			id = this.showData[this.showData.length - 1][0];
 			this.showData = change;
-		}
-		if(4 == this.state.type){
+		}else if(4 == this.state.type){
 			id = this.showData[0][0];
 			this.showData = change;
 		}else{
