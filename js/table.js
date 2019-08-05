@@ -171,7 +171,7 @@ class Table extends React.Component {
 	}
 
 	handleButton(btnType) {
-		this.props.btnType ? this.refs.table.scrollTop = 0 : this.refs.table.scrollTop = this.refs.table.scrollHeight;
+		btnType ? this.refs.table.scrollTop = 0 : this.refs.table.scrollTop = this.refs.table.scrollHeight;
 	}
 
 	handleGetData() {

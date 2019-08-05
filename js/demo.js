@@ -22,9 +22,6 @@ class Button extends React.Component {
 class Main extends React.Component {
 	constructor(props) {
 		super(props);
-		this.state = {
-			ref: null,
-		}
 
 		this.handleButton = this.handleButton.bind(this);
 	}
