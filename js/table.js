@@ -42,29 +42,6 @@ class Column extends React.Component {
 	}
 }
 
-class Button extends React.Component {
-	constructor(props) {
-		super(props);
-
-		this.handleUp = this.handleUp.bind(this);
-		this.handleDown = this.handleDown.bind(this);
-	}
-
-	handleUp() {
-		this.props.btnType(1);
-	}
-
-	handleDown() {
-		this.props.btnType(0);
-	}
-
-	render() {
-		return e('div', {style:{height: '50px', width: '98.5vw', 'background-color': 'white', 'position': 'fixed' ,'top': 0}},
-			e('div', {onClick: this.handleUp, className:'weui-btn weui-btn_mini weui-btn_primary', style:{'margin-left' :'20px'}}, '上滚'),
-			e('div', {onClick: this.handleDown, className:'weui-btn weui-btn_mini weui-btn_primary', style:{'margin-left' :'20px'}}, '下滚'));
-	}
-}
-
 class Table extends React.Component {
 	constructor(props) {
 		super(props);
@@ -88,6 +65,10 @@ class Table extends React.Component {
 		this.handleSetTop = this.handleSetTop.bind(this);
 		this.handleButton = this.handleButton.bind(this);
 		this.handleGetData();
+	}
+
+	componentDidMount(){
+		this.props.onRef(this);
 	}
 
   	componentWillUnmount() {
@@ -190,7 +171,7 @@ class Table extends React.Component {
 	}
 
 	handleButton(btnType) {
-		btnType ? this.refs.table.scrollTop = 0 : this.refs.table.scrollTop = this.refs.table.scrollHeight;
+		this.props.btnType ? this.refs.table.scrollTop = 0 : this.refs.table.scrollTop = this.refs.table.scrollHeight;
 	}
 
 	handleGetData() {
@@ -216,7 +197,6 @@ class Table extends React.Component {
 
 		return this.state.wait ? e('div', null, null) :
 		e('div', {ref: this.handleBinding},
-			e(Button, {btnType: this.handleButton}, null),
 			e('div', {ref: 'table', style: {overflowY: 'scroll', 'padding-top': '53px', height:'93vh', white:'100vw'}},
 				e('table', null,
 					e(Row, {title: this.table.title}, null),
