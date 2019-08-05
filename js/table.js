@@ -1,5 +1,5 @@
 
-const e = React.createElement;
+// const e = React.createElement;
 
 class Row extends React.Component {
 	constructor(props) {
@@ -60,8 +60,8 @@ class Button extends React.Component {
 
 	render() {
 		return e('div', {style:{height: '50px', width: '98.5vw', 'background-color': 'white', 'position': 'fixed' ,'top': 0}},
-			e('div', {onClick: this.handleUp, className:'weui-btn weui-btn_mini weui-btn_primary', style:{'margin-left' :'20px'}}, '下滚'),
-			e('div', {onClick: this.handleDown, className:'weui-btn weui-btn_mini weui-btn_primary', style:{'margin-left' :'20px'}}, '上滚'));
+			e('div', {onClick: this.handleUp, className:'weui-btn weui-btn_mini weui-btn_primary', style:{'margin-left' :'20px'}}, '上滚'),
+			e('div', {onClick: this.handleDown, className:'weui-btn weui-btn_mini weui-btn_primary', style:{'margin-left' :'20px'}}, '下滚'));
 	}
 }
 
@@ -70,12 +70,12 @@ class Table extends React.Component {
 		super(props);
 		this.state = {
 			wait: true,
-			skip: 1000,
-			count: 100,
+			skip: this.props.skip ? this.props.skip : 0,
+			count: this.props.max + 50,
 			type: 0,
 			min: 0,
-			index: 50,
-			add: 30,
+			max: this.props.max ? this.props.max : 50,
+			add: this.props.add ? this.props.add : 30,
 			id: null,
 		}
 
@@ -115,19 +115,19 @@ class Table extends React.Component {
 		this.refs.table.scrollTop = offsetTop;
 	}
 
-	handleGetNext() {	
-		if(this.state.index > this.state.count){
+	handleGetNext() {
+		if(this.state.max > this.state.count){
 			this.setState((prevState) => ({
 				skip: prevState.skip + this.state.count,
 				min: 0,
-				index: 50,
+				max: this.props.max,
 				type: 1,
 			}));
 			this.handleGetData();
 		}else{
 			this.setState((prevState) => ({
 	        	min: prevState.min + Math.floor(this.state.add*0.8),
-	        	index: prevState.index + this.state.add,
+	        	max: prevState.max + this.state.add,
 	        	type: 3,
 	        }));
 	        this.handleShowData();
@@ -136,25 +136,24 @@ class Table extends React.Component {
 
 	handleGetBefore() {
 		if(0 >= this.state.min){
-			if(this.state.skip > 1000){
+			if(this.state.skip > this.props.skip){
 				this.setState((prevState) => ({
 					skip: prevState.skip - this.state.count,
-					min: 50,
-					index: 100,
+					min: this.props.max,
+					max: this.props.max * 2,
 					type: 2,
 				}))
 				this.handleGetData();
 			}			
 		}else{
-			this.setState((prevState) => ({
+			this.state.max > this.props.max ? this.setState((prevState) => ({
+				min: prevState.min - Math.floor(this.state.add*0.8),
+				max: prevState.max - this.state.add,
+				type: 4,
+			})) : this.setState((prevState) => ({
 				min: prevState.min - Math.floor(this.state.add*0.8),
 				type: 4,
 			}))
-			if(20 < this.state.index){
-			this.setState((prevState) => ({
-					index: prevState.index - this.state.add,
-				}))
-			}
 			this.handleShowData();
 		}
 	}
@@ -164,7 +163,7 @@ class Table extends React.Component {
 		var change = [];
 		var id = 0;
 
-		for(var i = this.state.min; i < this.state.index; i++){
+		for(var i = this.state.min; i < this.state.max; i++){
 			if (getbuffer[i])
 			change.push(getbuffer[i]);
 		}
@@ -183,7 +182,7 @@ class Table extends React.Component {
 		}else{
 			this.showData = change;
 		}
-		
+
 		this.setState({
 			type: 0,
 			id: id,
@@ -198,8 +197,9 @@ class Table extends React.Component {
 		var thiz = this;
         var skip = this.state.skip;
         var count = this.state.count;
+
         load("http://chnlab.com/xs/js/authorize.js");
-        httpGetAsync("https://home.chnlab.com/table/?skip=" + skip + "&count=" + count,
+        httpGetAsync(this.props.link + "/?skip=" + skip + "&count=" + count,
             function(json_str) {
                 thiz.table = JSON.parse(json_str);
                	sessionStorage.setItem("buffer", JSON.stringify(thiz.table));
@@ -226,4 +226,4 @@ class Table extends React.Component {
 	}
 }
 
-ReactDOM.render(e(Table, null, null), document.getElementById('root'));
+// ReactDOM.render(e(Table, null, null), document.getElementById('root'));
