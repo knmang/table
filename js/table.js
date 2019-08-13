@@ -61,33 +61,32 @@ class Table extends React.Component {
 		this.handleGetNext = this.handleGetNext.bind(this);
 		this.handleGetBefore = this.handleGetBefore.bind(this);
 		this.handleShowData = this.handleShowData.bind(this);
-		this.handleBinding = this.handleBinding.bind(this);
 		this.handleSetTop = this.handleSetTop.bind(this);
 		this.handleButton = this.handleButton.bind(this);
 		this.handleGetData();
 	}
 
 	componentDidMount(){
+		window.addEventListener('scroll', this.handleScroll);
 		this.props.onRef(this);
 	}
 
   	componentWillUnmount() {
-		this.refs.table.removeEventListener('scroll', this.handleScroll);
+		window.removeEventListener('scroll', this.handleScroll);
   	}
 
- 	handleBinding() {
- 		this.refs.table.addEventListener('scroll', this.handleScroll);		
- 	}
-
   	handleScroll() {
-		var {clientHeight} = this.refs.table;
-		var isBottom = this.refs.table.clientHeight + this.refs.table.scrollTop + 50;
+  		// console.log(this.scrollTop);
+		// var {clientHeight} = this.refs.table;
+		// var isBottom = this.refs.table.clientHeight + this.refs.table.scrollTop + 50;
+		var isBottom = window.innerHeight = window.scrollY;
+		// console.log(isBottom);
 
-		if(isBottom >= this.refs.table.scrollHeight){
-			this.handleGetNext();
-		}
+		// if(isBottom >= this.refs.table.scrollHeight){
+		// 	this.handleGetNext();
+		// }
 
-		if(0 == this.refs.table.scrollTop) {
+		if(0 == isBottom) {
 			this.handleGetBefore();		
 		}
 	}
@@ -171,7 +170,8 @@ class Table extends React.Component {
 	}
 
 	handleButton(btnType) {
-		btnType ? this.refs.table.scrollTop = 0 : this.refs.table.scrollTop = this.refs.table.scrollHeight;
+		console.log(window);
+		// btnType ? this.refs.table.scrollTop = 0 : this.refs.table.scrollTop = this.refs.table.scrollHeight;
 	}
 
 	handleGetData() {
@@ -196,14 +196,12 @@ class Table extends React.Component {
 		var id = this.state.id;
 
 		return this.state.wait ? e('div', null, null) :
-		e('div', {ref: this.handleBinding},
-			e('div', {ref: 'table', style: {overflowY: 'scroll', 'padding-top': '53px', height:'93vh', white:'100vw'}},
-				e('table', null,
-					e(Row, {title: this.table.title}, null),
-					this.showData.map(function(list, i) {
-						return e(Column, {list: list, setTop: thiz.handleSetTop, id: id}, null)
-					}))));
+			e('table', {style: {'margin-top' : '55px'}},
+				e(Row, {title: this.table.title}, null),
+				this.showData.map(function(list, i) {
+					return e(Column, {list: list, setTop: thiz.handleSetTop, id: id}, null)
+				}));
 	}
 }
 
-// ReactDOM.render(e(Table, null, null), document.getElementById('root'));
+// ReactDOM.render(e(Main, null, null), document.getElementById('root'));
