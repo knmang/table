@@ -37,7 +37,7 @@ class Main extends React.Component {
 	render() {
 		return e('div', null,
 			e(Button, {btnType: this.handleButton, }, null),
-			e(Table, {onRef: this.onRef, link: 'https://home.chnlab.com/table', skip: 100, add: 30, max: 50,}, null));
+			e(Table, {onRef: this.onRef, link: 'https://home.chnlab.com/table', skip: 100, max: 50,}, null));
 	}
 }
 
